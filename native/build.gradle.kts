@@ -7,4 +7,5 @@ dependencies {
     implementation(libs.guava)
     implementation(libs.netty.handler)
     implementation(libs.checker.qual)
+    implementation(libs.slf4j)
 }

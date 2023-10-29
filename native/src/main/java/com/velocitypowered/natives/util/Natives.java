@@ -25,6 +25,9 @@ import com.velocitypowered.natives.compression.VelocityCompressorFactory;
 import com.velocitypowered.natives.encryption.JavaVelocityCipher;
 import com.velocitypowered.natives.encryption.NativeVelocityCipher;
 import com.velocitypowered.natives.encryption.VelocityCipherFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -36,6 +39,8 @@ import java.nio.file.StandardCopyOption;
  */
 public class Natives {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger("Proxy");
+
   private Natives() {
     throw new AssertionError();
   }
@@ -45,6 +50,7 @@ public class Natives {
       try {
         InputStream nativeLib = Natives.class.getResourceAsStream(path);
         if (nativeLib == null) {
+          LOGGER.info("Unable to find native library {}", path);
           throw new IllegalStateException("Native library " + path + " not found.");
         }
 
@@ -59,11 +65,14 @@ public class Natives {
         }));
 
         try {
+          LOGGER.info("Loading native library {}", tempFile.toAbsolutePath());
           System.load(tempFile.toAbsolutePath().toString());
         } catch (UnsatisfiedLinkError e) {
+          LOGGER.info("Unable to load native {}", tempFile.toAbsolutePath());
           throw new NativeSetupException("Unable to load native " + tempFile.toAbsolutePath(), e);
         }
       } catch (IOException e) {
+        LOGGER.info("Unable to copy natives {}", path, e);
         throw new NativeSetupException("Unable to copy natives", e);
       }
     };

@@ -17,10 +17,13 @@
 
 package com.velocitypowered.natives.util;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  * A loader for native code.
@@ -28,6 +31,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @param <T> the interface of the instance to load
  */
 public final class NativeCodeLoader<T> implements Supplier<T> {
+  private static final Logger LOGGER = LoggerFactory.getLogger("Proxy");
 
   private final Variant<T> selected;
 
@@ -44,6 +48,7 @@ public final class NativeCodeLoader<T> implements Supplier<T> {
     for (Variant<T> variant : variants) {
       T got = variant.get();
       if (got == null) {
+        LOGGER.info("Unable to load native code variant {}", variant.name);
         continue;
       }
       return variant;
@@ -77,6 +82,7 @@ public final class NativeCodeLoader<T> implements Supplier<T> {
 
     public @Nullable T get() {
       if (status == Status.NOT_AVAILABLE || status == Status.SETUP_FAILURE) {
+        LOGGER.info("Not loading native code variant {} because of status: {}", name, status.name());
         return null;
       }
 
