@@ -68,8 +68,14 @@ public class Natives {
           LOGGER.info("Loading native library {}", tempFile.toAbsolutePath());
           System.load(tempFile.toAbsolutePath().toString());
         } catch (UnsatisfiedLinkError e) {
-          LOGGER.info("Unable to load native {}", tempFile.toAbsolutePath());
-          throw new NativeSetupException("Unable to load native " + tempFile.toAbsolutePath(), e);
+          LOGGER.info("Unable to load native {}", tempFile.toAbsolutePath(), e);
+          try {
+            LOGGER.info("Trying to load library with System.loadLibrary()");
+            System.loadLibrary(tempFile.getFileName().toString());
+          } catch (final Throwable e2) {
+            LOGGER.info("Unable to load native {}", tempFile.toAbsolutePath());
+            throw new NativeSetupException("Unable to load native " + tempFile.toAbsolutePath(), e2);
+          }
         }
       } catch (IOException e) {
         LOGGER.info("Unable to copy natives {}", path, e);
