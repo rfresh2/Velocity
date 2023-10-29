@@ -89,6 +89,7 @@ public class Natives {
     if (Files.exists(nativePath)) {
       Files.delete(nativePath);
     }
+    Files.createDirectories(nativePath.getParent());
     return Files.createFile(nativePath);
   }
 
