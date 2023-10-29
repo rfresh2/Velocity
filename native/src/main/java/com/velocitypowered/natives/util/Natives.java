@@ -54,7 +54,7 @@ public class Natives {
           throw new IllegalStateException("Native library " + path + " not found.");
         }
 
-        Path tempFile = createTemporaryNativeFilename(path.substring(path.lastIndexOf('.')));
+        Path tempFile = createTemporaryNativeFilename(path.substring(path.lastIndexOf('/')));
         Files.copy(nativeLib, tempFile, StandardCopyOption.REPLACE_EXISTING);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
           try {
@@ -80,11 +80,16 @@ public class Natives {
 
   private static Path createTemporaryNativeFilename(String ext) throws IOException {
     String temporaryFolderPath = System.getProperty("velocity.natives-tmpdir");
+    Path nativePath;
     if (temporaryFolderPath != null) {
-      return Files.createTempFile(Path.of(temporaryFolderPath), "native-", ext);
+      nativePath = Path.of(temporaryFolderPath, ext);
     } else {
-      return Files.createTempFile("native-", ext);
+      nativePath = Path.of("natives", ext);
     }
+    if (Files.exists(nativePath)) {
+      Files.delete(nativePath);
+    }
+    return Files.createFile(nativePath);
   }
 
   public static final NativeCodeLoader<VelocityCompressorFactory> compress = new NativeCodeLoader<>(
