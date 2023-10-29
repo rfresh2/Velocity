@@ -80,6 +80,9 @@ public class Natives {
       } catch (IOException e) {
         LOGGER.info("Unable to copy natives {}", path, e);
         throw new NativeSetupException("Unable to copy natives", e);
+      } catch (final Exception e) {
+        LOGGER.info("Unexpected error loading native {}", path, e);
+        throw e;
       }
     };
   }

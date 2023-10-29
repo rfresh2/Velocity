@@ -19,12 +19,16 @@ package com.velocitypowered.natives.util;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.function.BooleanSupplier;
 
 /**
  * Statically-computed constraints for native code.
  */
 public class NativeConstraints {
+  private static final Logger LOGGER = LoggerFactory.getLogger("Proxy");
   private static final boolean NATIVES_ENABLED = !Boolean.getBoolean("velocity.natives-disabled");
   private static final boolean IS_AMD64;
   private static final boolean IS_AARCH64;
@@ -45,11 +49,17 @@ public class NativeConstraints {
     IS_AARCH64 = osArch.equals("aarch64") || osArch.equals("arm64");
   }
 
-  static final BooleanSupplier NATIVE_BASE = () -> NATIVES_ENABLED && CAN_GET_MEMORYADDRESS;
+  static final BooleanSupplier NATIVE_BASE = () -> {
+    LOGGER.info("Natives enabled: {}, can get memory address: {}", NATIVES_ENABLED, CAN_GET_MEMORYADDRESS);
+    return NATIVES_ENABLED && CAN_GET_MEMORYADDRESS;
+  };
 
-  static final BooleanSupplier LINUX_X86_64 = () -> NATIVE_BASE.getAsBoolean()
-      && System.getProperty("os.name", "").equalsIgnoreCase("Linux")
-      && IS_AMD64;
+  static final BooleanSupplier LINUX_X86_64 = () -> {
+    LOGGER.info("Natives base: {}, OS: {}, arch: {}, isAmd64: {}", NATIVE_BASE.getAsBoolean(), System.getProperty("os.name", ""), System.getProperty("os.arch", ""), IS_AMD64);
+    return NATIVE_BASE.getAsBoolean()
+        && System.getProperty("os.name", "").equalsIgnoreCase("Linux")
+        && IS_AMD64;
+  };
 
   static final BooleanSupplier LINUX_AARCH64 = () -> NATIVE_BASE.getAsBoolean()
       && System.getProperty("os.name", "").equalsIgnoreCase("Linux")

@@ -73,11 +73,11 @@ public final class NativeCodeLoader<T> implements Supplier<T> {
     }
 
     Variant(BooleanSupplier possiblyAvailable, Runnable setup, String name, Supplier<T> object) {
-      this.status =
-          possiblyAvailable.getAsBoolean() ? Status.POSSIBLY_AVAILABLE : Status.NOT_AVAILABLE;
+      this.status = possiblyAvailable.getAsBoolean() ? Status.POSSIBLY_AVAILABLE : Status.NOT_AVAILABLE;
       this.setup = setup;
       this.name = name;
       this.object = object;
+      LOGGER.info("Native code variant {} is {}", name, status.name());
     }
 
     public @Nullable T get() {
