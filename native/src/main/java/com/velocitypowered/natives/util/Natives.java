@@ -84,7 +84,7 @@ public class Natives {
     if (temporaryFolderPath != null) {
       nativePath = Path.of(temporaryFolderPath, ext);
     } else {
-      nativePath = Path.of("natives", ext);
+      nativePath = Path.of(ext);
     }
     if (Files.exists(nativePath)) {
       Files.delete(nativePath);
