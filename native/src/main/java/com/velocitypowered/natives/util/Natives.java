@@ -54,7 +54,7 @@ public class Natives {
           throw new IllegalStateException("Native library " + path + " not found.");
         }
 
-        Path tempFile = createTemporaryNativeFilename(path.substring(path.lastIndexOf('/')));
+        Path tempFile = createTemporaryNativeFilename(path.substring(path.lastIndexOf('/')+1));
         Files.copy(nativeLib, tempFile, StandardCopyOption.REPLACE_EXISTING);
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
           try {
