@@ -93,6 +93,7 @@ public final class NativeCodeLoader<T> implements Supplier<T> {
           constructed = object.get();
           status = Status.SETUP;
         } catch (Exception e) {
+          LOGGER.info("Setup failure loading variant: {}", name, e);
           status = Status.SETUP_FAILURE;
           return null;
         }
