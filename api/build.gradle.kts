@@ -5,7 +5,6 @@ plugins {
 }
 
 java {
-    withJavadocJar()
     withSourcesJar()
 
     sourceSets["main"].java {
